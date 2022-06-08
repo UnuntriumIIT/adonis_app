@@ -63,7 +63,7 @@ class ClientController {
                 .send({ message: { error: 'Incorrect ID provided' } });
         }
         if (!client.deleted_at){
-            client.deleted_at = Date.now();
+            client.deleted_at = new Date().toISOString();
             client.save();
             return response.status(200).send({ message: "OK! Deleted!"});
         } else {
