@@ -20,15 +20,10 @@ class ClientController {
         if (!client) {
             return response
                 .status(404)
-                .send({ message: { error: 'Клиент с таким ID не найден.' } });
-        }
-        if (!client.isSoftDeleted()) {
-            client.delete()
-            return response.status(200).send({ message: "Пользователь удален." });
+                .send({ message: { error: 'Клиент с таким ID не найден или уже кем-то удален.' } });
         } else {
-            return response
-                .status(418)
-                .send({ message: { error: 'Клиент с таким ID уже кем-то удален :)' } });
+            client.delete()
+            return response.status(200).send({ message: "Клиент успешно удален." });
         }
     }
 
