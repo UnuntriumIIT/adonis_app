@@ -24,7 +24,8 @@
     "@adonisjs/framework": "^5.0.9",
     "@adonisjs/ignitor": "^2.0.8",
     "@adonisjs/lucid": "^6.3.0",
-    "@radmen/adonis-lucid-soft-deletes": "^0.2.0",
+    "@backspacerhino/soft-deletes": "^3.0.0",
+    "adonis-bumblebee": "^2.2.0",
     "pg": "^8.7.3",
     "uuid": "^8.3.2"
   },

@@ -6,7 +6,12 @@ const Model = use('Model')
 class Client extends Model {
     static table = 'public.client'
 
-    static get primaryKey () {
+    static boot() {
+        super.boot()
+        this.addTrait('@provider:SoftDeletes')
+    }
+
+    static get primaryKey() {
         return 'id'
     }
     static get createdAtColumn() {
@@ -15,8 +20,25 @@ class Client extends Model {
     static get updatedAtColumn() {
         return 'updated_at'
     }
-    static get incrementing () {
+    static get incrementing() {
         return false
+    }
+
+    static scopeWithMainRalations(query) {
+        return query.with('children')
+            .with('communications')
+            .with('passport')
+            .with('regAddress')
+            .with('livingAddress')
+            .with('jobs', (builder) => {
+                return builder.withAddress()
+            })
+    }
+
+    static scopeWithAllRelations(query) {
+        return query.withMainRalations().with('spouse', (builder) => {
+            builder.withMainRalations()
+        })
     }
 
     spouse() {

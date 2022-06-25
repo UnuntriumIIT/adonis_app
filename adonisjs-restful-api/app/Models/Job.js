@@ -11,6 +11,11 @@ class Job extends Model {
     static get updatedAtColumn() {
         return 'updated_at'
     }
+
+    static scopeWithAddress(query) {
+        return query.with('address')
+    }
+
     static get primaryKey () {
         return 'id'
     }
