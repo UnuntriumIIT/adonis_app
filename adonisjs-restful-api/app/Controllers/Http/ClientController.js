@@ -1,6 +1,12 @@
 'use strict'
 
 const Client = use('App/Models/Client')
+const Address = use('App/Models/Address')
+const DocumentPassport = use('App/Models/DocumentPassport')
+const Communication = use('App/Models/Communication')
+const Child = use('App/Models/Child')
+const Job = use('App/Models/Job')
+const Bumblebee = use('Adonis/Addons/Bumblebee')
 
 class ClientController {
 
@@ -12,6 +18,35 @@ class ClientController {
     }
 
     async putNewClient({ request, response }) {
+        var addressesArray = [request.body.regAddress, request.body.livingAddress]
+        request.body.jobs.forEach(job => {
+            if (!job.address)
+                addressesArray.push(job.address)
+        })
+
+        let addresses = await this.transformData(addressesArray, 'AddressTransformer', { request })
+        let passport = await this.transformData([request.body.passport], 'PassportTransformer', { request })
+        let client = await this.transformData([request.body], 'ClientTransformer', request)
+        let communications = await this.transformData(request.body.communications, 'CommunicationTransformer', { request })
+        let children = await this.transformData(request.body.children, 'ChildTransformer', { request })
+        let jobs = await this.transformData(request.body.jobs, 'JobTransformer', { request })
+
+        await Address.createMany(addresses)
+        await DocumentPassport.createMany(passport)
+        await Client.createMany(client)
+        await Communication.createMany(communications)
+        await Child.createMany(children)
+        await Job.createMany(jobs)
+
+        return response.status(200).send('Клиент успешно создан.')
+    }
+
+    async transformData(data, transformer, ctx){
+        return Bumblebee.create()
+            .collection(data)
+            .transformWith(transformer)
+            .withContext(ctx)
+            .toJSON()
     }
 
     async deleteClient({ params, response }) {
